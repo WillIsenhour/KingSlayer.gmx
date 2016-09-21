@@ -1,0 +1,2 @@
+Shaun Spalding's basic platformer movement
+Pixelated Pope's resolution management
