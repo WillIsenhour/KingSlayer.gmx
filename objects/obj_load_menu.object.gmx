@@ -4,7 +4,7 @@
   <solid>0</solid>
   <visible>-1</visible>
   <depth>0</depth>
-  <persistent>-1</persistent>
+  <persistent>0</persistent>
   <parentName>&lt;undefined&gt;</parentName>
   <maskName>&lt;undefined&gt;</maskName>
   <events>
@@ -25,79 +25,16 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Display Properties
-ideal_width=0;
-ideal_height=480;
-zoom=1;
-max_zooom=1;
+            <string>//save menu selections
+menu[0] = "Load File 1";
+menu[1] = "Load File 2";
+menu[2] = "Load File 3";
+menu[3] = "Back";
 
-
-
-aspect_ratio=display_get_width()/display_get_height();
-
-ideal_width=round(ideal_height*aspect_ratio);
-//ideal_height=round(ideal_width / aspect_ratio);
-
-//Perfect Pixel Scaling
-if(display_get_width() mod ideal_width != 0)
-{
-  var d = round(display_get_width()/ideal_width);
-  ideal_width=display_get_width()/d;
-}
-if(display_get_height() mod ideal_height != 0)
-{
-  var d = round(display_get_height()/ideal_height);
-  ideal_height=display_get_height()/d;
-}
-
-//Check for odd numbers
-if(ideal_width &amp; 1)
-  ideal_width++;
-if(ideal_height &amp; 1)
-  ideal_height++;
-    
-//Calculate Max Zoom
-max_zoom=floor(display_get_width()/ideal_width);  
-  
-for(var i=1; i&lt;=room_last; i++)
-{
-  if(room_exists(i))
-  {
-    room_set_view(i,0,true,0,0,ideal_width,ideal_height,0,0,ideal_width,ideal_height,0,0,0,0,-1);
-    room_set_view_enabled(i,true);
-  }
-}
-
-surface_resize(application_surface,ideal_width,ideal_height);
-//display_set_gui_size(ideal_width,ideal_height);
-window_set_size(ideal_width,ideal_height);
-alarm[0]=1; //Sorry.  This line got left out of the tutorial vid.  This will center the window after the initial resizing.
-room_goto(room_next(room));
-
-</string>
-          </argument>
-        </arguments>
-      </action>
-    </event>
-    <event eventtype="2" enumb="0">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>///Center window
-window_center();
+//vertical space between menu items, in pixels
+space = 64;
+//menu position variable (corresponds to menu selections array)
+mpos = 0;
 </string>
           </argument>
         </arguments>
@@ -120,25 +57,20 @@ window_center();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Zoom window
-if(keyboard_check_pressed(ord("Z")))
-{
-  zoom++;
-  
-  if(zoom&gt;max_zoom)
-    zoom=1;
-  
-  window_set_size(ideal_width*zoom,ideal_height*zoom);
-  surface_resize(application_surface,ideal_width*zoom,ideal_height*zoom);
-  alarm[0]=1;
-}
+            <string>//Cursor movement
+mpos = scr_step_menu(menu, mpos);
 
+//check if user has selected a menu option
+var push;   
+push = keyboard_check_released(vk_enter);
+if (push == 1) scr_load_menu();
+    
 </string>
           </argument>
         </arguments>
       </action>
     </event>
-    <event eventtype="8" enumb="64">
+    <event eventtype="8" enumb="0">
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -155,14 +87,10 @@ if(keyboard_check_pressed(ord("Z")))
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_color(c_white);
-draw_set_halign(fa_left);
-draw_set_valign(fa_top);
-draw_text(5,5,scr_display_write_specs(display.view));
+            <string>draw_set_color(c_black);
+draw_rectangle(0,0,window_get_width(), window_get_height(), 0);
 
-draw_set_halign(fa_right);
-draw_set_valign(fa_bottom);
-draw_text(display_get_gui_width()-5,display_get_gui_height()-5,"Bottom Right");
+scr_draw_menu(menu, mpos, space);
 </string>
           </argument>
         </arguments>
