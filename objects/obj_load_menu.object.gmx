@@ -25,7 +25,9 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>//save menu selections
+            <string>///Set menu selections and variables
+
+//save menu selections
 menu[0] = "Load File 1";
 menu[1] = "Load File 2";
 menu[2] = "Load File 3";
@@ -57,7 +59,9 @@ mpos = 0;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>//Cursor movement
+            <string>///Move cursor and check for selection
+
+//Cursor movement
 mpos = scr_step_menu(menu, mpos);
 
 //check if user has selected a menu option
@@ -70,7 +74,7 @@ if (push == 1) scr_load_menu();
         </arguments>
       </action>
     </event>
-    <event eventtype="8" enumb="0">
+    <event eventtype="8" enumb="64">
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -87,8 +91,10 @@ if (push == 1) scr_load_menu();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_color(c_black);
-draw_rectangle(0,0,window_get_width(), window_get_height(), 0);
+            <string>///Draw menu with updated cursor position
+
+draw_set_color(c_green);
+draw_rectangle(0, 0, surface_get_width(application_surface), surface_get_height(application_surface), 0);
 
 scr_draw_menu(menu, mpos, space);
 </string>

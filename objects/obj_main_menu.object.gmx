@@ -25,17 +25,64 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>//menu selections
-menu[0] = "Start";
-menu[1] = "Load";
-menu[2] = "Options";
-menu[3] = "Exit";
+            <string>///Set menu selections and variables
+
+//menu flag
+curr_menu = "main";
+
+//Main menu selections
+main_menu[0] = "Start";
+main_menu[1] = "Load";
+main_menu[2] = "Options";
+main_menu[3] = "Exit";
+
+//Load menu selections
+load_menu[0] = "Load File 1";
+load_menu[1] = "Load File 2";
+load_menu[2] = "Load File 3";
+load_menu[3] = "Back";
+
+//Options menu selections
+if (window_get_fullscreen())
+{
+    options_menu[0] = "Switch to windowed mode";
+}
+else
+{
+    options_menu[0] = "Switch to fullscreen mode";
+}
+options_menu[1] = "Back";
 
 //vertical space between menu items
 space = 64;
 //menu position variable (corresponds to menu selections array)
 mpos = 0;
 
+
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Center window
+window_center();
 </string>
           </argument>
         </arguments>
@@ -58,20 +105,42 @@ mpos = 0;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>//Cursor movement
-mpos = scr_step_menu(menu, mpos);
+            <string>///Move cursor and check for selection
 
 //check if user has selected a menu option
 var push;   
 push = keyboard_check_released(vk_enter);
-if (push == 1) scr_main_menu();
-    
+
+switch (curr_menu)
+{
+    //Main menu
+    case "main":
+    {
+        mpos = scr_step_menu(main_menu, mpos);
+        if (push == 1) scr_main_menu();
+        break;
+    }
+    //Load menu
+    case "load":
+    {
+        mpos = scr_step_menu(load_menu, mpos);
+        if (push == 1) scr_load_menu();
+        break;
+    }
+    //Options menu
+    case "options":
+    {
+        mpos = scr_step_menu(options_menu, mpos);
+        if (push == 1) scr_options_menu();
+        break;
+    }
+}
 </string>
           </argument>
         </arguments>
       </action>
     </event>
-    <event eventtype="8" enumb="0">
+    <event eventtype="8" enumb="64">
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -88,10 +157,39 @@ if (push == 1) scr_main_menu();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_color(c_black);
-draw_rectangle(0,0,window_get_width(), window_get_height(), 0);
+            <string>///Draw menu with updated cursor position
 
-scr_draw_menu(menu, mpos, space);
+var width = surface_get_width(application_surface);
+var height = surface_get_height(application_surface);
+
+draw_set_color(c_green);
+draw_rectangle(0, 0, width, height, 0);
+
+switch (curr_menu)
+{
+    //Main menu
+    case "main":
+    {
+        draw_set_halign(fa_center);
+        draw_set_color(c_white);
+        draw_text(width/2, height/6, "King Slayer");
+        
+        scr_draw_menu(main_menu, mpos, space);
+        break;
+    }
+    //Load menu
+    case "load":
+    {
+        scr_draw_menu(load_menu, mpos, space);
+        break;
+    }
+    //Options menu
+    case "options":
+    {
+        scr_draw_menu(options_menu, mpos, space);
+        break;
+    }
+}   
 </string>
           </argument>
         </arguments>

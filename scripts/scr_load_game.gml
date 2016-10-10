@@ -2,7 +2,8 @@
 var fileName = "SaveFile" + string(argument0);
 
 //Open save file if it already exists
-if (file_exists("Save.sav")){
+if (file_exists("Save.sav"))
+{
     ini_open("Save.sav");
     var LoadedRoom = ini_read_real(fileName, "room", -1);
     ini_close();

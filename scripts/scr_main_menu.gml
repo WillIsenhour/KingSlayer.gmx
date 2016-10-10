@@ -11,15 +11,27 @@ switch (mpos)
     //Load
     case 1:
     {
-        room_goto(room_load_menu);
+        curr_menu = "load";
+        //reset menu position
+        mpos = 0;
+        scr_draw_menu(load_menu, mpos, space);
         break;
     }
     //Options
     case 2:
     {
+        curr_menu = "options";
+        //reset menu position
+        mpos = 0;
+        scr_draw_menu(options_menu, mpos, space);
         break;
     }
     //Exit
-    case 3: game_end(); break;
+    case 3: 
+    {
+        scr_save_config();
+        game_end(); 
+        break;
+    }
     default: break;
 }

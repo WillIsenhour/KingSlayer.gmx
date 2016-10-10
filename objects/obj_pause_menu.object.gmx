@@ -25,46 +25,29 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Display Properties
+            <string>///Set menu selections and variables
 
-//Ideal game resolution
-global.res_height = 240;
-global.res_width = 256;
+//pause and menu flags
+pause = 0;
+curr_menu = "pause";
 
-//Load configuration file
-scr_load_config();
+//pause menu selections
+pause_menu[0] = "Resume";
+pause_menu[1] = "Exit to Main Menu";
+pause_menu[2] = "Exit Game";
+pause_menu[3] = "Save (Dev Only)";
 
-//Set game resolution
-scr_set_res(global.full_screen);
+//save menu selections
+//save menu selections
+save_menu[0] = "Save File 1";
+save_menu[1] = "Save File 2";
+save_menu[2] = "Save File 3";
+save_menu[3] = "Back";
 
-alarm[0]=1; //window center alarm
-
-room_goto(room_main_menu);
-
-</string>
-          </argument>
-        </arguments>
-      </action>
-    </event>
-    <event eventtype="2" enumb="0">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>///Center window
-window_center();
+//vertical space between menu items, in pixels
+space = 64;
+//menu position variable (corresponds to menu selections array)
+mpos = 0;
 </string>
           </argument>
         </arguments>
@@ -87,19 +70,59 @@ window_center();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>///Zoom window
-if(keyboard_check_pressed(ord("Z")))
-{
-  zoom++;
-  
-  if(zoom&gt;max_zoom)
-    zoom=1;
-  
-  window_set_size(ideal_width*zoom,ideal_height*zoom);
-  surface_resize(application_surface,ideal_width*zoom,ideal_height*zoom);
-  alarm[0]=1;
-}
+            <string>///Move cursor and check for selection
 
+if (pause)
+{
+    //check if user has selected menu item
+    var push;
+    push = keyboard_check_released(vk_enter);
+    
+    switch (curr_menu)
+    {
+        //Save menu
+        case "save":
+        {
+            mpos = scr_step_menu(save_menu, mpos);
+            if (push == 1) scr_save_menu();
+        }
+        case "pause":
+        {
+            mpos = scr_step_menu(pause_menu, mpos);
+            if (push == 1) scr_pause_menu();
+        }
+    }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="5" enumb="27">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Pause game
+
+if (!pause) 
+{  
+    pause = 1;
+    //pass true to pause all objects except obj_pause
+    instance_deactivate_all(true);
+}
 </string>
           </argument>
         </arguments>
@@ -122,14 +145,35 @@ if(keyboard_check_pressed(ord("Z")))
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_color(c_white);
-draw_set_halign(fa_left);
-draw_set_valign(fa_top);
-draw_text(5,5,scr_display_write_specs(display.view));
+            <string>///Draw menu (pause or save) with updated cursor
 
-draw_set_halign(fa_right);
-draw_set_valign(fa_bottom);
-draw_text(display_get_gui_width()-5,display_get_gui_height()-5,"Bottom Right");
+if (pause)
+{
+    var width = surface_get_width(application_surface);
+    var height = surface_get_height(application_surface);
+
+    draw_set_color(c_green);
+    draw_rectangle(0,0,width, height, 0);
+    
+    switch (curr_menu){
+        //Pause menu
+        case "pause":
+        {
+            draw_set_halign(fa_center);
+            draw_set_color(c_white);
+            draw_text(width/2, height/6, "Game Paused");
+            
+            scr_draw_menu(pause_menu, mpos, space);
+            break;
+        }
+        //Save menu
+        case "save":
+        {
+            scr_draw_menu(save_menu, mpos, space);
+            break;
+        }
+    }
+}
 </string>
           </argument>
         </arguments>

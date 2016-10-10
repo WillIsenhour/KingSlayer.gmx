@@ -9,30 +9,27 @@ switch (mpos)
         instance_activate_all();
         break;
     }
-    //Options
-    case 1:
-    {
-        break;
-    }
     //Exit to Main Menu
-    case 2:
+    case 1:
     {
         pause = 0;
         room_goto(room_main_menu);
         break;
     }
     //Exit Game
-    case 3: 
+    case 2: 
     {
-        game_end(); break;
+        scr_save_config();
+        game_end(); 
+        break;
     }
     //Save Game (Dev Only)
-    case 4: 
+    case 3: 
     {
-        save = 1;
+        curr_menu = "save";
         //reset menu position
         mpos = 0;
-        scr_draw_menu(menu_save, mpos, space);
+        scr_draw_menu(save_menu, mpos, space);
         break;
     }
     default: break;
